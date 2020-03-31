@@ -1,3 +1,5 @@
 .DS_STORE
 outputJSON/
 generate_datasets/preferences.json
+generate_datasets/energiforbrukning-i-geografiska-omradet-092206-on.json
+
