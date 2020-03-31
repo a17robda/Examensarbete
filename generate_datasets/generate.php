@@ -1,8 +1,13 @@
 <?php
+// Set timezone
 date_default_timezone_set("Europe/Stockholm");
+
+// Fix the seed to 1024
+srand(1024);
 
 hello();
 
+// Setup
 function setup() {
     echo "WELCOME TO SETUP! \n";
     echo "Create a new preferences file? [y/n]\n";
@@ -31,6 +36,7 @@ function setup() {
     }
 }
 
+// Generic yes/no
 function yesNo(&$inp) {
     switch($inp) {
         case "y":
@@ -44,6 +50,7 @@ function yesNo(&$inp) {
     }
 }
 
+// Start menu
 function hello() {
     if(!file_exists("preferences.json")) {
         echo "It seems like there is no preference file present. Please set up one. \n";
@@ -69,6 +76,7 @@ function hello() {
     }
 }
 
+// Initialize
 function initialize() {
     echo "File size goal(Mb): \n";
     $inp = readline();
@@ -92,6 +100,7 @@ function initialize() {
 
 }
 
+// Confirm generation
 function confirmGenerate(&$inp) {
     echo "This will generate a file of ".$inp." Megabytes [".kbGoal($inp)." kilobytes]. Continue? [y/n]\n";
     echo "Continue?: ", $s = readline();
@@ -102,6 +111,7 @@ function confirmGenerate(&$inp) {
     }
 }
 
+// Return preferences created from setup function
 function returnPreferences() {
     $preferences = file_get_contents("preferences.json");
     $decoded = json_decode($preferences, true);
@@ -115,6 +125,7 @@ function createFile(&$folderName, &$separator, &$fileName, &$fileSplit) {
     return $f;
 }
 
+// Checks the operating system structure
 function checkOS() {
     // Check OS
     if (DIRECTORY_SEPARATOR === '/') {
@@ -126,6 +137,49 @@ function checkOS() {
     }
 }
 
+// Generate a pseudorandom array
+function randArray(&$keycode, &$year, &$day, &$month, &$hour, &$minute) {
+    // Timestamp
+    if((int)$month < 10) {
+        $month = "0"+$month;
+    }
+    if((int)$month > 12) {
+        $month = 0;
+        $year++;
+    }
+    if((int)$day < 10) {
+        $day = "0".$day;
+    }
+    if((int)$day > 31) {
+        $day = "00";
+        $month++;
+    }
+    if((int)$hour < 10) {
+        $hour = "0".$hour;
+    }
+    if((int)$hour > 24) {
+        $hour = "00";
+        $day++;
+    }
+    if((int)$minute < 10) {
+        $minute = "0".$minute;
+    }
+    if((int)$minute > 59) {
+        $minute = "00";
+        $hour++;
+    }
+
+    $rndValue = rand(44872.13, 665063.04);
+
+    $randArr = array('nyckelkod' => $keycode, 'period' => $year.$month, 'timestamp' => gmdate('c', mktime($hour,$minute,0,$day,$month,$year)), 'unit' => 'kWh', 'value' => $rndValue);
+    
+    $keycode++;
+    $minute = $minute + 5;
+
+    return $randArr;
+}
+
+// Generate arrays and split files accordingly
 function generate($kbGoal) {
     // File size
     $kbCount = 0;
@@ -136,12 +190,27 @@ function generate($kbGoal) {
 
     $fileSplit = 0;
 
+    // Array vars (nonrandom)
+    $keycode = 1000000; // "ID"
+    $year = 2019;
+    $month = 1;
+    $day = 1;
+    $hour = 0;
+    $minute = 0;
+
+    $mTime;
+    $detail;
+    $unit;
+    $usageType;
+
+    //
+    
     // File management
     $folderName = returnPreferences()['folderName'];
     $separator = returnPreferences()['separator'];
     $fileName = returnPreferences()['fileName'];
 
-    $testArray = array('nyckelkod' => 123307, 'period' => 201907, 'tidpunkt' => '2019-07-06T00:00:00+00:00', 'detaljniva' => 'Dag', 'enhet' => 'kWh', 'forbrukningstyp' => 'EL', 'varde' => 82763.784511);
+    //$testArray = array('nyckelkod' => 123307, 'period' => 201907, 'tidpunkt' => '2019-07-06T00:00:00+00:00', 'detaljniva' => 'Dag', 'enhet' => 'kWh', 'forbrukningstyp' => 'EL', 'varde' => 82763.784511);
     
     // File name as String
     $fullFileName = $folderName.$separator.$fileName."_".$fileSplit."json";
@@ -155,17 +224,19 @@ function generate($kbGoal) {
     $separator;
 
     $f = createFile($folderName, $separator, $fileName, $fileSplit);
-    //fwrite($f, "[");
     while(reachedGoal($kbCount, $targetKb) == false) {
+        $theArray = randArray($keycode, $year, $day, $month, $hour, $minute);
+
         $iter = $iter + 1;
         $tmpStr = "Number: ".$iter." Kb: ".round($kbCount)." File size: ".filesize($folderName.$separator.$fileName."_".$fileSplit.".json")."\n";
         echo $tmpStr;
-        kbSize($testArray, $kbCount, $kbTemp);
-        fwrite($f, json_encode($testArray));
-        if(reachedGoal($kbCount, $targetKb) == false && (round($kbTemp) % 10240 != 0) || round($kbTemp) == 0) {
+        //echo gmdate('c', mktime(25,59,59,11,3,2019))."\n";
+        kbSize($theArray, $kbCount, $kbTemp);
+        fwrite($f, json_encode($theArray));
+        if(reachedGoal($kbCount, $targetKb) == false && (round($kbTemp) % (10 * 10000) != 0) || round($kbTemp) == 0) {
             fwrite($f, ",\n");
         }
-        if(round($kbTemp) % 10240 == 0 && round($kbTemp) != 0) {
+        if(round($kbTemp) % (10 * 10000) == 0 && round($kbTemp) != 0) {
             $kbTemp = 0;
             echo "Splitting file!\n";
             fwrite($f, "]");
@@ -188,10 +259,12 @@ function kbSize(&$inp, &$kbCount, &$kbTemp) {
         }
 }
 
+// The kilobyte goal from megabytes
 function kbGoal($mb) {
-    return $mb * 1024; 
+    return $mb * 1000; 
 }
 
+// Check if we have reached the total file goal
 function reachedGoal($kbCount, $targetKb) {
     if($kbCount >= $targetKb) {
         return true;
@@ -200,6 +273,7 @@ function reachedGoal($kbCount, $targetKb) {
     }
 }
 
+// Finalize the file - last thing called
 function finalize(&$f, &$timeNOW, &$dateNOW) {
     $timeDONE = time();
     $dateDONE = date('Y-m-d h:i:sa', $timeDONE);
