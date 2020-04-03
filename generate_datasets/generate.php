@@ -105,7 +105,14 @@ function confirmGenerate(&$inp) {
     echo "This will generate a file of ".$inp." Megabytes [".kbGoal($inp)." kilobytes]. Continue? [y/n]\n";
     echo "Continue?: ", $s = readline();
     if (yesNo($s)) {
-        echo "\nGenerating data\n", generate($inp * 1024);
+        $pretty;
+        echo "Would you like to pretty-print?\n", $s = readline();
+        if(yesNo($s)) {
+            $pretty = true;
+        } else {
+            $pretty = false;
+        }
+        echo "\nGenerating data\n", generate($inp * 1024, $pretty);
     } else if(!yesNo($s)) {
         echo "\nAborting...\n", hello();
     }
@@ -171,7 +178,7 @@ function randArray(&$keycode, &$year, &$day, &$month, &$hour, &$minute) {
 
     $rndValue = rand(44872.13, 665063.04);
 
-    $randArr = array('nyckelkod' => $keycode, 'period' => $year.$month, 'timestamp' => gmdate('c', mktime($hour,$minute,0,$day,$month,$year)), 'unit' => 'kWh', 'value' => $rndValue);
+    $randArr = array('nyckelkod' => $keycode, 'tperiod' => $year.$month, 'tstamp' => gmdate('c', mktime($hour,$minute,0,$day,$month,$year)), 'tunit' => 'kwh', 'tvalue' => $rndValue);
     
     $keycode++;
     $minute = $minute + 5;
@@ -180,13 +187,15 @@ function randArray(&$keycode, &$year, &$day, &$month, &$hour, &$minute) {
 }
 
 // Generate arrays and split files accordingly
-function generate($kbGoal) {
+function generate($kbGoal, $pretty) {
     // File size
     $kbCount = 0;
     $kbTemp = 0;
     $targetKb = $kbGoal;
     $iter = 0;
     $splitMbLimit = 10;
+
+    $pretty;
 
     $fileSplit = 0;
 
@@ -234,7 +243,11 @@ function generate($kbGoal) {
         kbSize($theArray, $kbCount, $kbTemp);
         fwrite($f, json_encode($theArray));
         if(reachedGoal($kbCount, $targetKb) == false && (round($kbTemp) % (10 * 10000) != 0) || round($kbTemp) == 0) {
-            fwrite($f, ",\n");
+            if($pretty) {
+                fwrite($f, ",\n");
+            } else {
+                fwrite($f, ",");
+            }
         }
         if(round($kbTemp) % (10 * 10000) == 0 && round($kbTemp) != 0) {
             $kbTemp = 0;
