@@ -242,14 +242,14 @@ function generate($kbGoal, $pretty) {
         //echo gmdate('c', mktime(25,59,59,11,3,2019))."\n";
         kbSize($theArray, $kbCount, $kbTemp);
         fwrite($f, json_encode($theArray));
-        if(reachedGoal($kbCount, $targetKb) == false && (round($kbTemp) % (10 * 10000) != 0) || round($kbTemp) == 0) {
+        if(reachedGoal($kbCount, $targetKb) == false && (round($kbTemp) % (10 * 1000) != 0) || round($kbTemp) == 0) {
             if($pretty) {
                 fwrite($f, ",\n");
             } else {
                 fwrite($f, ",");
             }
         }
-        if(round($kbTemp) % (10 * 10000) == 0 && round($kbTemp) != 0) {
+        if(round($kbTemp) % (10 * 1000) == 0 && round($kbTemp) != 0) {
             $kbTemp = 0;
             echo "Splitting file!\n";
             fwrite($f, "]");
