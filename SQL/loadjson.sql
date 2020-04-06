@@ -8,3 +8,4 @@ CREATE TABLE jsontable(
     PRIMARY KEY(id)
 );
 
+

@@ -1,7 +1,1 @@
-[0m[[0m[0mdebug[0m] [0m[0mPackaging /home/me/Documents/Examensarbete/sparkTests/target/scala-2.11/sparktests_2.11-1.0.jar ...[0m
-[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
-[0m[[0m[0mdebug[0m] [0m[0m	SparkTests$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/me/Documents/Examensarbete/sparkTests/target/scala-2.11/classes/SparkTests$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	SparkTests.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/me/Documents/Examensarbete/sparkTests/target/scala-2.11/classes/SparkTests.class[0m
-[0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m
+[0m[[0m[0mdebug[0m] [0m[0mJar uptodate: /home/robin/Documents/Examensarbete/sparkTests/target/scala-2.11/sparktests_2.11-1.0.jar[0m
