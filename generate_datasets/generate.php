@@ -128,7 +128,7 @@ function returnPreferences() {
 // IMPLEMENT FILE SPLITTING AND CREATION
 function createFile(&$folderName, &$separator, &$fileName, &$fileSplit) {
     $f = fopen($folderName.$separator.$fileName."_".$fileSplit.".json", "w+");
-    fwrite($f, "[");
+    fwrite($f, "[\n");
     return $f;
 }
 
@@ -252,7 +252,7 @@ function generate($kbGoal, $pretty) {
         if(round($kbTemp) % (10 * 1000) == 0 && round($kbTemp) != 0) {
             $kbTemp = 0;
             echo "Splitting file!\n";
-            fwrite($f, "]");
+            fwrite($f, "\n]");
             fclose($f);
             $fileSplit++;
             $f = createFile($folderName, $separator, $fileName, $fileSplit);
@@ -300,7 +300,7 @@ function finalize(&$f, &$timeNOW, &$dateNOW) {
     echo "Seconds elapsed: ".$secondsElapsed." seconds.\n";
     echo "Minutes elapsed: ".$minutesElapsed." minutes.\n";
     
-    fwrite($f, "]");
+    fwrite($f, "\n]");
     fclose($f);
 
     clearstatcache();

@@ -1,4 +1,10 @@
-[0m[[0m[31merror[0m] [0m[0m/home/me/Documents/Examensarbete/sparkTests/src/main/scala/SparkTests.scala:2:8: not found: object spark[0m
-[0m[[0m[31merror[0m] [0m[0mimport spark.implicits._[0m
-[0m[[0m[31merror[0m] [0m[0m       ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0m/home/robin/Documents/Examensarbete/sparkTests/src/main/scala/SparkTests.scala:8:24: not found: type SparkConf[0m
+[0m[[0m[31merror[0m] [0m[0m        val conf = new SparkConf().setAppName("Spark Tests").setMaster(master)[0m
+[0m[[0m[31merror[0m] [0m[0m                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/robin/Documents/Examensarbete/sparkTests/src/main/scala/SparkTests.scala:8:72: not found: value master[0m
+[0m[[0m[31merror[0m] [0m[0m        val conf = new SparkConf().setAppName("Spark Tests").setMaster(master)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/robin/Documents/Examensarbete/sparkTests/src/main/scala/SparkTests.scala:9:25: not found: type SparkContext[0m
+[0m[[0m[31merror[0m] [0m[0m        val spark = new SparkContext(conf)[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0mthree errors found[0m
