@@ -8,20 +8,23 @@ object SparkTests {
         // Import primitive datatypes
         import spark.implicits._
 
-        println("Hello world!");
+        println("Hello world!")
 
         val jsonPath = "/home/robin/Documents/Examensarbete/generate_datasets/outputJSON"
         val jsonDF = spark.read
         .option("multiLine", true).option("mode", "PERMISSIVE")
-        .json(jsonPath)
+        .json(jsonPath).cache()
 
         jsonDF.printSchema()
 
         jsonDF.createOrReplaceTempView("values")
 
-        val selectAll = spark.sql("SELECT * FROM values WHERE nyckelkod < 5000000")
+        val selectAll = spark.sql("SELECT * FROM values WHERE nyckelkod > 1000001 AND nyckelkod < 1000010")
         selectAll.show()
 
+        selectAll.write.json("/home/robin/Documents/Examensarbete/sparkTests/sparkOut.json")
+
+        // STOPS THE CURRENT SPARK SESSION
         spark.stop()
     }
 }
