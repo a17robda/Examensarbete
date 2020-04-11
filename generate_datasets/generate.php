@@ -147,38 +147,26 @@ function checkOS() {
 // Generate a pseudorandom array
 function randArray(&$keycode, &$year, &$day, &$month, &$hour, &$minute) {
     // Timestamp
-    if((int)$month < 10) {
-        $month = "0"+$month;
-    }
     if((int)$month > 12) {
-        $month = 0;
+        $month = 1;
         $year++;
     }
-    if((int)$day < 10) {
-        $day = "0".$day;
-    }
     if((int)$day > 31) {
-        $day = "00";
+        $day = 1;
         $month++;
     }
-    if((int)$hour < 10) {
-        $hour = "0".$hour;
-    }
-    if((int)$hour > 24) {
-        $hour = "00";
+    if((int)$hour > 23) {
+        $hour = 0;
         $day++;
     }
-    if((int)$minute < 10) {
-        $minute = "0".$minute;
-    }
     if((int)$minute > 59) {
-        $minute = "00";
+        $minute = 0;
         $hour++;
     }
 
     $rndValue = rand(44872.13, 665063.04);
 
-    $randArr = array('nyckelkod' => $keycode, 'tperiod' => $year.$month, 'tstamp' => gmdate('c', mktime($hour,$minute,0,$day,$month,$year)), 'tunit' => 'kwh', 'tvalue' => $rndValue);
+    $randArr = array('nyckelkod' => $keycode, 'tstamp' => gmdate('c', mktime($hour,$minute,0,$month,$day,$year)), 'tunit' => 'kwh', 'tvalue' => $rndValue);
     
     $keycode++;
     $minute = $minute + 5;
@@ -200,7 +188,7 @@ function generate($kbGoal, $pretty) {
     $fileSplit = 0;
 
     // Array vars (nonrandom)
-    $keycode = 1000000; // "ID"
+    $keycode = 0; // "ID"
     $year = 2019;
     $month = 1;
     $day = 1;
@@ -218,8 +206,6 @@ function generate($kbGoal, $pretty) {
     $folderName = returnPreferences()['folderName'];
     $separator = returnPreferences()['separator'];
     $fileName = returnPreferences()['fileName'];
-
-    //$testArray = array('nyckelkod' => 123307, 'period' => 201907, 'tidpunkt' => '2019-07-06T00:00:00+00:00', 'detaljniva' => 'Dag', 'enhet' => 'kWh', 'forbrukningstyp' => 'EL', 'varde' => 82763.784511);
     
     // File name as String
     $fullFileName = $folderName.$separator.$fileName."_".$fileSplit."json";
@@ -259,7 +245,7 @@ function generate($kbGoal, $pretty) {
         }
         
     }
-    finalize($f, $timeNOW, $dateNOW);
+    finalize($f, $timeNOW, $dateNOW, $keycode);
 }
 
 // Bytes to kilobytes count
@@ -287,7 +273,7 @@ function reachedGoal($kbCount, $targetKb) {
 }
 
 // Finalize the file - last thing called
-function finalize(&$f, &$timeNOW, &$dateNOW) {
+function finalize(&$f, &$timeNOW, &$dateNOW, &$maxId) {
     $timeDONE = time();
     $dateDONE = date('Y-m-d h:i:sa', $timeDONE);
 
@@ -302,6 +288,11 @@ function finalize(&$f, &$timeNOW, &$dateNOW) {
     
     fwrite($f, "\n]");
     fclose($f);
+
+    mkdir(returnPreferences()['folderName']."/max");
+    $maxIdFile = fopen(returnPreferences()['folderName']."/max/maxId.txt", "w+");
+    fwrite($maxIdFile, $maxId -1);
+    fclose($maxIdFile);
 
     clearstatcache();
 }

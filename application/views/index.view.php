@@ -4,7 +4,6 @@ $server = "localhost";
 $user = "admin";
 $password = "123";
 
-echo "Hello world";
 echo '
     <form action="" method="POST">
     <input type="radio" id="mysql" name="aggregation" value="mysql">
@@ -35,7 +34,13 @@ if(!empty ($aggChoice)) {
 
         foreach (glob("/home/robin/Documents/Examensarbete/sparkTests/sparkOut.json/*.json") as $file) {
             $js = file_get_contents($file);
-            $decoded = json_decode($js, true);
+            $js = json_encode($js);
+            $exploded = explode('\n', $js);
+            
+            
+            for ($i = 0; $i < count($exploded); $i++) {
+                echo str_replace('\\', '', $exploded[$i])."<br>";
+            }
         }
     }
 } else {
