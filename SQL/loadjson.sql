@@ -4,7 +4,7 @@ USE exjobb;
 
 CREATE TABLE jsontable(
     id int AUTO_INCREMENT,
-    nyckelkod JSON,
+    jsonrow JSON,
     PRIMARY KEY(id)
 );
 

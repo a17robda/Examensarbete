@@ -45,7 +45,7 @@ object SparkTests {
             case "0" =>
                 return "SELECT * FROM values WHERE nyckelkod == " + maxRand
             case "1" =>
-                return "SELECT avg(tvalue) AS avg, std(tvalue) as std FROM values WHERE nyckelkod < " + maxRand
+                return "SELECT max(tvalue) AS max, min(tvalue) AS min, avg(tvalue) AS avg, std(tvalue) AS std, variance(tvalue) AS variance FROM values WHERE nyckelkod < " + maxRand
         }
 }
     def randomize(maxId:Int, iter:Int) : Int = {

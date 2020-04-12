@@ -2,7 +2,7 @@
 
 $folderPath = 'generate_datasets/outputJSON';
 $files = scandir($folderPath);
-$files = array_diff($files, array('.', '..'));
+$files = array_diff($files, array('.', '..', 'max'));
 
 $server = "localhost";
 $user = "admin";
@@ -32,9 +32,6 @@ try {
                     if($k == "nyckelkod") {
                         $kod.= '{"'.$k.'"'.':'.$v.",";
                     }
-                    if($k == "tperiod") {
-                        $kod.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
-                    }
                     if($k == "tstamp") {
                         $kod.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
                     }
@@ -57,7 +54,7 @@ try {
             $kod = "";
         }
         //var_dump($valArr);
-        $sql = "INSERT INTO jsontable (nyckelkod) VALUES {$qmarks}";
+        $sql = "INSERT INTO jsontable (jsonrow) VALUES {$qmarks}";
         $stmt = $conn->prepare($sql);
         $stmt->execute($valArr);
     }
