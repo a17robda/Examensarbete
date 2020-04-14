@@ -111,7 +111,7 @@ function render($data, $platform, $complexity) {
             <th>Average</th>
             <th>Standard Deviation</th>
             <th>Variance</th>
-            <tr>";
+            </tr>";
         break;
         default:
             $table .= "<tr>
@@ -119,31 +119,35 @@ function render($data, $platform, $complexity) {
             <th>Timestamp</th>
             <th>Unit</th>
             <th>Value</th>
-            <tr>";
+            </tr>";
     break;
     }
     
     if($platform == "mysql") {
         $tmpArr = array();
         foreach($data as $arr) {
-                $table.= "
-                <tr>
-                    <td>{$arr['maximum']}</td>
-                    <td>{$arr['minimum']}</td>
-                    <td>{$arr['average']}</td>
-                    <td>{$arr['std_dev']}</td>
-                    <td>{$arr['variance']}</td>
-                </tr>
-                ";
+                if($complexity == "complex") {
+                    $table.= "
+                    <tr>
+                        <td>{$arr['maximum']}</td>
+                        <td>{$arr['minimum']}</td>
+                        <td>{$arr['average']}</td>
+                        <td>{$arr['std_dev']}</td>
+                        <td>{$arr['variance']}</td>
+                    </tr>
+                    ";
+                }
             foreach($arr as $k => $v) {
-                $table.= "
-                <tr>
-                    <td>{$js['tkeycode']}</td>
-                    <td>{$js['tstamp']}</td>
-                    <td>{$js['tunit']}</td>
-                    <td>{$js['tvalue']}</td>
-                </tr>
-                ";
+                if($complexity != "complex") {
+                    $table.= "
+                    <tr>
+                        <td>{$js['tkeycode']}</td>
+                        <td>{$js['tstamp']}</td>
+                        <td>{$js['tunit']}</td>
+                        <td>{$js['tvalue']}</td>
+                    </tr>
+                    ";
+                }
             }
         }
     }
@@ -151,25 +155,30 @@ function render($data, $platform, $complexity) {
         while(!feof($data))  {
             $result = fgets($data);
             $js = json_decode($result, true);
-            $table.= "
-            <tr>
-                <td>{$js['maximum']}</td>
-                <td>{$js['minimum']}</td>
-                <td>{$js['average']}</td>
-                <td>{$js['std_dev']}</td>
-                <td>{$js['variance']}</td>
-            </tr>
-            <tr>
-                <td>{$js['tkeycode']}</td>
-                <td>{$js['tstamp']}</td>
-                <td>{$js['tunit']}</td>
-                <td>{$js['tvalue']}</td>
-            </tr>
+            if($complexity == "complex") {
+                $table.= "
+                <tr>
+                    <td>{$js['maximum']}</td>
+                    <td>{$js['minimum']}</td>
+                    <td>{$js['average']}</td>
+                    <td>{$js['std_dev']}</td>
+                    <td>{$js['variance']}</td>
+                </tr>";
+            }
+            if($complexity != "complex") {
+                $table.= 
+                "<tr>
+                    <td>{$js['tkeycode']}</td>
+                    <td>{$js['tstamp']}</td>
+                    <td>{$js['tunit']}</td>
+                    <td>{$js['tvalue']}</td>
+                </tr>
             ";
-          }
+            }
+        }
         fclose($data);
-        $table.="</table>";
     }
+    $table.="</table>";
     echo $table;
 }
 
