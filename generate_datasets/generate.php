@@ -102,7 +102,7 @@ function initialize() {
 
 // Confirm generation
 function confirmGenerate(&$inp) {
-    echo "This will generate a file of ".$inp." Megabytes [".kbGoal($inp)." kilobytes]. Continue? [y/n]\n";
+    echo "This will generate a file of ".$inp." Megabytes. Continue? [y/n]\n";
     echo "Continue?: ", $s = readline();
     if (yesNo($s)) {
         $pretty;
@@ -112,7 +112,7 @@ function confirmGenerate(&$inp) {
         } else {
             $pretty = false;
         }
-        echo "\nGenerating data\n", generate($inp * 1024, $pretty);
+        echo "\nGenerating data\n", generate($inp * 1000, $pretty);
     } else if(!yesNo($s)) {
         echo "\nAborting...\n", hello();
     }
@@ -147,6 +147,9 @@ function checkOS() {
 // Generate a pseudorandom array
 function randArray(&$keycode, &$year, &$day, &$month, &$hour, &$minute) {
     // Timestamp
+    if((int)$year > 2020) {
+        $year = 1977;
+    }
     if((int)$month > 12) {
         $month = 1;
         $year++;
@@ -164,12 +167,16 @@ function randArray(&$keycode, &$year, &$day, &$month, &$hour, &$minute) {
         $hour++;
     }
 
-    $rndValue = rand(44872.13, 665063.04);
+    $rndValue = rand(3704, 112292);
+    // Fixes apparant bug with rand();
+    if($rndValue > 112292) {
+        $rndValue = 112292;
+    }
 
-    $randArr = array('nyckelkod' => $keycode, 'tstamp' => gmdate('c', mktime($hour,$minute,0,$month,$day,$year)), 'tunit' => 'kwh', 'tvalue' => $rndValue);
+    $randArr = array('tkeycode' => $keycode, 'tstamp' => gmdate('c',mktime($hour,$minute,0,$month,$day,$year)), 'tunit' => 'kwh', 'tvalue' => $rndValue);
     
     $keycode++;
-    $minute = $minute + 5;
+    $minute = $minute + 30;
 
     return $randArr;
 }
@@ -189,7 +196,7 @@ function generate($kbGoal, $pretty) {
 
     // Array vars (nonrandom)
     $keycode = 0; // "ID"
-    $year = 2019;
+    $year = 1977;
     $month = 1;
     $day = 1;
     $hour = 0;
@@ -225,7 +232,6 @@ function generate($kbGoal, $pretty) {
         $iter = $iter + 1;
         $tmpStr = "Number: ".$iter." Kb: ".round($kbCount)." File size: ".filesize($folderName.$separator.$fileName."_".$fileSplit.".json")."\n";
         echo $tmpStr;
-        //echo gmdate('c', mktime(25,59,59,11,3,2019))."\n";
         kbSize($theArray, $kbCount, $kbTemp);
         fwrite($f, json_encode($theArray));
         if(reachedGoal($kbCount, $targetKb) == false && (round($kbTemp) % (10 * 1000) != 0) || round($kbTemp) == 0) {
@@ -251,10 +257,10 @@ function generate($kbGoal, $pretty) {
 // Bytes to kilobytes count
 function kbSize(&$inp, &$kbCount, &$kbTemp) {
         foreach ($inp as $k => $v) {
-            $kbCount += strlen($k) * 0.00124;
-            $kbCount += strlen($v) * 0.00124;
-            $kbTemp += strlen($k) * 0.00124;
-            $kbTemp += strlen($v) * 0.00124;
+            $kbCount += strlen($k) * 0.001;
+            $kbCount += strlen($v) * 0.001;
+            $kbTemp += strlen($k) * 0.001;
+            $kbTemp += strlen($v) * 0.001;
         }
 }
 

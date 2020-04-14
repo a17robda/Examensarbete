@@ -2,6 +2,6 @@
 /usr/local/spark-2.4.5-bin-hadoop2.7/bin/spark-submit \
   --class "SparkTests" \
   --master spark://robin:7077 \
- ~/Documents/Examensarbete/sparkTests/target/scala-2.11/sparktests_2.11-1.0.jar $1 $2
+ ~/Documents/Examensarbete/sparkTests/target/scala-2.11/sparktests_2.11-1.0.jar $1 $2 $3
 
 

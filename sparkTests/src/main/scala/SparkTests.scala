@@ -7,19 +7,20 @@ object SparkTests {
 
         var testType : String = args(0)
         var iter : Int = args(1).toInt
+        var dbSize : String = args(2);
 
         // Import primitive datatypes
         import spark.implicits._
         import scala.io.Source
 
         var maxId : Int = 0;
-        val filename = "/home/robin/Documents/Examensarbete/generate_datasets/outputJSON/max/maxId.txt"
+        val filename = "/home/robin/Documents/Examensarbete/generate_datasets/outputJSON" + dbSize + "/max/maxId.txt"
         for (line <- Source.fromFile(filename).getLines) {
             maxId = line.toInt
         }
 
         val queryString = queryBuilder(testType, maxId, iter)
-        val jsonPath = "/home/robin/Documents/Examensarbete/generate_datasets/outputJSON"
+        val jsonPath = "/home/robin/Documents/Examensarbete/generate_datasets/outputJSON" + dbSize
         val jsonDF = spark.read
         .option("multiLine", true).option("mode", "PERMISSIVE")
         .json(jsonPath)
@@ -43,9 +44,11 @@ object SparkTests {
         println("Max rand: " + maxRand)
         choice match {
             case "0" =>
-                return "SELECT * FROM values WHERE nyckelkod == " + maxRand
+                return "SELECT * FROM values WHERE tkeycode = " + maxRand
             case "1" =>
-                return "SELECT max(tvalue) AS max, min(tvalue) AS min, avg(tvalue) AS avg, std(tvalue) AS std, variance(tvalue) AS variance FROM values WHERE nyckelkod < " + maxRand
+                return "SELECT max(tvalue) AS maximum, min(tvalue) AS minimum, avg(tvalue) AS average, std(tvalue) AS std_dev, variance(tvalue) AS variance FROM values WHERE tkeycode < " + maxRand
+            case "2" =>
+                return "SELECT * FROM values WHERE tkeycode < " + maxRand + " ORDER BY tkeycode DESC LIMIT 100"
         }
 }
     def randomize(maxId:Int, iter:Int) : Int = {

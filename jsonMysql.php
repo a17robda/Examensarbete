@@ -1,12 +1,14 @@
 <?php
 
-$folderPath = 'generate_datasets/outputJSON';
+$folderPath = 'generate_datasets/outputJSON_1';
 $files = scandir($folderPath);
 $files = array_diff($files, array('.', '..', 'max'));
 
 $server = "localhost";
 $user = "admin";
 $password = "123";
+$database = "exjobb_1";
+
 
 $timeNOW;
 $dateNOW;
@@ -15,7 +17,7 @@ try {
     // Time measurements
     $timeNOW = time();
     $dateNOW = date('Y-m-d h:i:sa', $timeNOW);
-    $conn = new PDO("mysql:host=$server;dbname=exjobb", $user, $password);
+    $conn = new PDO("mysql:host=$server;dbname=$database", $user, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     echo "Connected!";
 
@@ -29,7 +31,7 @@ try {
         $valueCounter = 0;
         foreach($decoded as $arr) {
             foreach($arr as $k => $v) {
-                    if($k == "nyckelkod") {
+                    if($k == "tkeycode") {
                         $kod.= '{"'.$k.'"'.':'.$v.",";
                     }
                     if($k == "tstamp") {
@@ -46,7 +48,7 @@ try {
             echo $kod."\n";
             array_push($valArr, $kod);
             // Dynamic placeholders
-            if($arr["nyckelkod"] != $lastArr["nyckelkod"]) {
+            if($arr["tkeycode"] != $lastArr["tkeycode"]) {
                 $qmarks.= "(?),";
             } else {
                 $qmarks.= "(?)";

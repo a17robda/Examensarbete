@@ -25,4 +25,20 @@ $max = max($values);
 
 echo $min." ".$max;
 
+$times = array();
+
+
+foreach($energyData as $arr) {
+    array_push($times, $arr['tidpunkt']);
+}
+
+echo min($times)."\n";
+echo max($times)."\n";
+
+$unixMin = strtotime(min($times));
+$unixMax = strtotime(max($times));
+
+// Total days between two dates
+$days = unixtojd($unixMax) - unixtojd($unixMin);
+echo $days."\n";
     

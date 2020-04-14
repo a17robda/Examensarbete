@@ -3,7 +3,8 @@
 class Router 
 {
     protected $routes = [
-        "" => "controllers/index.controller.php"
+        "" => "controllers/index.controller.php",
+        "query" => "controllers/query.controller.php"
     ];
 
     public function route($uri) {
