@@ -1,11 +1,6 @@
 <?php
 
 $database = "exjobb";
-$aggChoice;
-$complexity;
-$dataSize;
-
-$iter;
 
 function databaseSelector($size) {
     switch($size) {
