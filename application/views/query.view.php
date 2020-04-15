@@ -133,6 +133,7 @@ function render($data, $platform, $complexity) {
                     ";
                 }
             foreach($arr as $k => $v) {
+                $js = json_decode($v, true);
                 if($complexity != "complex") {
                     $table.= "
                     <tr>

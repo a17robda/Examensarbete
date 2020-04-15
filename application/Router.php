@@ -8,11 +8,17 @@ class Router
     ];
 
     public function route($uri) {
-        if(array_key_exists($uri, $this->routes)) {
-            return $this->routes[$uri];
-        } else {
-            return "controllers/404.controller.php";
+        switch($uri) {
+            case "":
+                return $this->routes[""];
+            break;
+            case "query":
+                return $this->routes["query"];
+            break;
+            default:
+                return "controllers/404.controller.php";
+        break;
         }
     }
 }
-
+?>
