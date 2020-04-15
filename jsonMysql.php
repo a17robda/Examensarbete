@@ -28,7 +28,6 @@ try {
         $decoded = json_decode($js, true);
         // Last array in file
         $lastArr = end($decoded);
-        $valueCounter = 0;
         foreach($decoded as $arr) {
             foreach($arr as $k => $v) {
                     if($k == "tkeycode") {
