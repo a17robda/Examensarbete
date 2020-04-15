@@ -32,28 +32,28 @@ try {
         foreach($decoded as $arr) {
             foreach($arr as $k => $v) {
                     if($k == "tkeycode") {
-                        $kod.= '{"'.$k.'"'.':'.$v.",";
+                        $js.= '{"'.$k.'"'.':'.$v.",";
                     }
                     if($k == "tstamp") {
-                        $kod.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
+                        $js.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
                     }
                     if($k == "tunit") {
-                        $kod.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
+                        $js.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
                     }
                     if($k == "tvalue") {
-                        $kod.= '"'.$k.'"'.':'.$v."}";
+                        $js.= '"'.$k.'"'.':'.$v."}";
                     }
             }
     
-            echo $kod."\n";
-            array_push($valArr, $kod);
+            echo $js."\n";
+            array_push($valArr, $js);
             // Dynamic placeholders
             if($arr["tkeycode"] != $lastArr["tkeycode"]) {
                 $qmarks.= "(?),";
             } else {
                 $qmarks.= "(?)";
             }
-            $kod = "";
+            $js = "";
         }
         //var_dump($valArr);
         $sql = "INSERT INTO jsontable (jsonrow) VALUES {$qmarks}";
