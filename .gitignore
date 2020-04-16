@@ -5,8 +5,10 @@ generate_datasets/energiforbrukning-i-geografiska-omradet-092206-on.json
 
 **/spark/project/
 **/spark/spark-warehouse/
-**/spark/target/
 spark/target/streams/
+spark/target/scala-2.11/classes/
+spark/target/scala-2.11/update
+
 **/*.crc
 phpinfo.php
 **/spark/sparkOut.json/
