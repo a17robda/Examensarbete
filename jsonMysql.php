@@ -9,7 +9,6 @@ $user = "admin";
 $password = "123";
 $database = "exjobb_1";
 
-
 $timeNOW;
 $dateNOW;
 
@@ -31,28 +30,28 @@ try {
         foreach($decoded as $arr) {
             foreach($arr as $k => $v) {
                     if($k == "tkeycode") {
-                        $js.= '{"'.$k.'"'.':'.$v.",";
+                        $insert.= '{"'.$k.'"'.':'.$v.",";
                     }
                     if($k == "tstamp") {
-                        $js.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
+                        $insert.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
                     }
                     if($k == "tunit") {
-                        $js.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
+                        $insert.= '"'.$k.'"'.':'.'"'.$v.'"'.",";
                     }
                     if($k == "tvalue") {
-                        $js.= '"'.$k.'"'.':'.$v."}";
+                        $insert.= '"'.$k.'"'.':'.$v."}";
                     }
             }
     
-            echo $js."\n";
-            array_push($valArr, $js);
+            echo $insert."\n";
+            array_push($valArr, $insert);
             // Dynamic placeholders
             if($arr["tkeycode"] != $lastArr["tkeycode"]) {
                 $qmarks.= "(?),";
             } else {
                 $qmarks.= "(?)";
             }
-            $js = "";
+            $insert = "";
         }
         //var_dump($valArr);
         $sql = "INSERT INTO jsontable (jsonrow) VALUES {$qmarks}";
@@ -76,10 +75,3 @@ $minutesElapsed = round($secondsElapsed / 60, 1);
 
 echo "Seconds elapsed: ".$secondsElapsed." seconds.\n";
 echo "Minutes elapsed: ".$minutesElapsed." minutes.\n";
-
-
-
-
-
-
-

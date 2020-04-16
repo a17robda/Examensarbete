@@ -43,7 +43,7 @@ if(!empty($_POST)) {
         case "spark":
             $qstr = query("spark", $iter, $complexity, $dbSize);
             $output = shell_exec($qstr);
-            foreach (glob("/home/robin/Documents/Examensarbete/sparkTests/sparkOut.json/*.json") as $file) {
+            foreach (glob("/home/robin/Documents/Examensarbete/spark/sparkOut.json/*.json") as $file) {
                 clearstatcache();
                 // File is not empty
                 if(filesize($file)) {
@@ -83,13 +83,13 @@ function query($platform, &$iter, $complexity, $dbSize) {
     if ($platform == "spark") {
         switch($complexity) {
             case "simple":
-                return '~/Documents/Examensarbete/sparkTests/launch.sh 0 '.$iter.' '.$dbSize;
+                return '~/Documents/Examensarbete/spark/launch.sh 0 '.$iter.' '.$dbSize;
             break;
             case "complex":
-                return '~/Documents/Examensarbete/sparkTests/launch.sh 1 '.$iter.' '.$dbSize;
+                return '~/Documents/Examensarbete/spark/launch.sh 1 '.$iter.' '.$dbSize;
             break;
             case "batch":
-                return '~/Documents/Examensarbete/sparkTests/launch.sh 2 '.$iter.' '.$dbSize;
+                return '~/Documents/Examensarbete/spark/launch.sh 2 '.$iter.' '.$dbSize;
             break;
         }
     }

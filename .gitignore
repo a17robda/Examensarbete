@@ -3,12 +3,13 @@ outputJSON/
 generate_datasets/preferences.json
 generate_datasets/energiforbrukning-i-geografiska-omradet-092206-on.json
 
-**/sparkTests/project/
-**/sparkTests/spark-warehouse/
-**/sparkTests/target/
+**/spark/project/
+**/spark/spark-warehouse/
+**/spark/target/
+spark/target/streams/
 **/*.crc
 phpinfo.php
-**/sparkTests/sparkOut.json/
+**/spark/sparkOut.json/
 generate_datasets/outputJSON_1/
 generate_datasets/outputJSON_10/
 generate_datasets/outputJSON_50/
