@@ -13,9 +13,14 @@ spark/target/scala-2.11/update
 phpinfo.php
 **/spark/sparkOut.json/
 generate_datasets/outputJSON_1/
-generate_datasets/outputJSON_10/
-generate_datasets/outputJSON_50/
+generate_datasets/outputJSON_13/
+generate_datasets/outputJSON_40/
 
 generate_datasets/datasets/
+
+testSelect.sql
+
+application/mysqlQueries/**
+
 
 

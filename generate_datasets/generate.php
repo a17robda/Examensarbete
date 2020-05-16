@@ -193,6 +193,7 @@ function generate($kbGoal, $pretty) {
     $pretty;
 
     $fileSplit = 0;
+    $mbSplit = 100;
 
     // Array vars (nonrandom)
     $keycode = 0; // "ID"
@@ -234,14 +235,14 @@ function generate($kbGoal, $pretty) {
         echo $tmpStr;
         kbSize($theArray, $kbCount, $kbTemp);
         fwrite($f, json_encode($theArray));
-        if(reachedGoal($kbCount, $targetKb) == false && (round($kbTemp) % (10 * 1000) != 0) || round($kbTemp) == 0) {
+        if(reachedGoal($kbCount, $targetKb) == false && (round($kbTemp) % ($mbSplit * 1000) != 0) || round($kbTemp) == 0) {
             if($pretty) {
                 fwrite($f, ",\n");
             } else {
                 fwrite($f, ",");
             }
         }
-        if(round($kbTemp) % (10 * 1000) == 0 && round($kbTemp) != 0) {
+        if(round($kbTemp) % ($mbSplit * 1000) == 0 && round($kbTemp) != 0) {
             $kbTemp = 0;
             echo "Splitting file!\n";
             fwrite($f, "\n]");
