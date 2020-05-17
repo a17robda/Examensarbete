@@ -7,13 +7,18 @@ function databaseSelector($size) {
         case "one":
             return "_1";
         break;
-        case "ten":
-            return "_10";
+        case "thirteen":
+            return "_13";
         break;
-        case "fifty":
-            return "_50";
+        case "forty":
+            return "_40";
         break;
     }
+}
+
+function returnQueryFile($dbSize, $complexity) {
+    $folderName = "outputJSON".$dbSize."_"."queries";
+    return file_get_contents("mysqlQueries/{$folderName}/{$complexity}.txt");
 }
 
 // Aggregation choice
@@ -53,8 +58,22 @@ if(!empty($_POST)) {
     }
     break;
 }
-} else {
-    
+}
+
+// Randomizes a date for the complex MySQL queries
+function randomizeDate($maxrand) {
+    // Seed the generator
+    srand($maxrand);
+    $year = (string)rand(1977, 2020);
+    $month = rand(1, 12);
+    if($month < 10) {
+        $month.= "0";
+    }
+    $day = rand(1, 31);
+    if($day < 10) {
+        $day.= "0";
+    }
+    return $year."-".$month."-".$day;
 }
 
 // Builds the queries accordingly
@@ -65,18 +84,12 @@ function query($platform, &$iter, $complexity, $dbSize) {
         $maxrand = rand(0, $maxval);
         switch($complexity) {
             case "simple":
-                return 'SELECT * FROM jsontable WHERE jsonrow->>"$.tkeycode" = '.$maxrand;
+                $queryFileString = str_replace("|x|", $maxrand, returnQueryFile($dbSize, $complexity));
+                return $queryFileString;
             break;
             case "complex":
-                return 'SELECT MAX(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS maximum,
-                MIN(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS minimum,
-                AVG(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS average,
-                STD(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS std_dev,
-                VARIANCE(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS variance
-                FROM jsontable WHERE jsonrow->>"$.tkeycode" < '.$maxrand;
-            break;
-            case "batch":
-                return 'SELECT jsonrow FROM jsontable WHERE jsonrow->>"$.tkeycode" < '.$maxrand.' ORDER BY CAST(jsonrow->>"$.tkeycode" AS UNSIGNED) DESC LIMIT 100';
+                $queryFileString = str_replace("|x|", randomizeDate($maxrand), returnQueryFile($dbSize, $complexity));
+                return $queryFileString;
             break;
         }
     }
@@ -87,9 +100,6 @@ function query($platform, &$iter, $complexity, $dbSize) {
             break;
             case "complex":
                 return '~/Documents/Examensarbete/spark/launch.sh 1 '.$iter.' '.$dbSize;
-            break;
-            case "batch":
-                return '~/Documents/Examensarbete/spark/launch.sh 2 '.$iter.' '.$dbSize;
             break;
         }
     }
@@ -104,6 +114,7 @@ function render($data, $platform, $complexity) {
             <th>Maximum</th>
             <th>Minimum</th>
             <th>Average</th>
+            <th>Sum Energy</th>
             <th>Standard Deviation</th>
             <th>Variance</th>
             </tr>";
@@ -127,6 +138,7 @@ function render($data, $platform, $complexity) {
                         <td>{$arr['maximum']}</td>
                         <td>{$arr['minimum']}</td>
                         <td>{$arr['average']}</td>
+                        <td>{$arr['sum_energy']}</td>
                         <td>{$arr['std_dev']}</td>
                         <td>{$arr['variance']}</td>
                     </tr>
@@ -157,6 +169,7 @@ function render($data, $platform, $complexity) {
                     <td>{$js['maximum']}</td>
                     <td>{$js['minimum']}</td>
                     <td>{$js['average']}</td>
+                    <td>{$js['sum_energy']}</td>
                     <td>{$js['std_dev']}</td>
                     <td>{$js['variance']}</td>
                 </tr>";

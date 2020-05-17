@@ -193,7 +193,7 @@ function generate($kbGoal, $pretty) {
     $pretty;
 
     $fileSplit = 0;
-    $mbSplit = 100;
+    $mbSplit = 10;
 
     // Array vars (nonrandom)
     $keycode = 0; // "ID"

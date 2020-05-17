@@ -48,7 +48,7 @@ try {
     fwrite($simpleQueryFile, "SELECT * FROM (");
     fwrite($complexQueryFile,
     'SELECT AVG(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS average,
-    SUM(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS totalEnergy,
+    SUM(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS sum_energy,
     MAX(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS maximum,
     MIN(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS minimum,
     STD(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS std_dev,
@@ -61,7 +61,7 @@ try {
         $foreachCount++;
 
         // Create a new table every 4 files inserted.
-        if($tableIterator % 4 == 0) {
+        if($tableIterator % 40 == 0) {
         // Create new table
         $createDbSql = "CREATE TABLE jsontable_".(string)$tableCount."(
             id int AUTO_INCREMENT,
@@ -73,7 +73,7 @@ try {
         // Write simple query
         $alias = "t".(string)$tableCount;
         $query = "SELECT {$alias}.id, {$alias}.jsonrow from jsontable_".$tableCount." {$alias}";
-        if($tableIterator != count($files) && $tableIterator + 4 <= count($files)) {
+        if($tableIterator != count($files) && $tableIterator + 40 <= count($files)) {
             $query.= " UNION ALL ";
         }
         // Write to queries
