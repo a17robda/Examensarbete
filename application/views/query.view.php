@@ -7,18 +7,13 @@ function databaseSelector($size) {
         case "one":
             return "_1";
         break;
+        case "five":
+            return "_5";
+        break;
         case "thirteen":
             return "_13";
         break;
-        case "forty":
-            return "_40";
-        break;
     }
-}
-
-function returnQueryFile($dbSize, $complexity) {
-    $folderName = "outputJSON".$dbSize."_"."queries";
-    return file_get_contents("mysqlQueries/{$folderName}/{$complexity}.txt");
 }
 
 // Aggregation choice
@@ -84,12 +79,15 @@ function query($platform, &$iter, $complexity, $dbSize) {
         $maxrand = rand(0, $maxval);
         switch($complexity) {
             case "simple":
-                $queryFileString = str_replace("|x|", $maxrand, returnQueryFile($dbSize, $complexity));
-                return $queryFileString;
+                return 'SELECT * FROM jsontable_1 where jsonrow->>"$.tkeycode" = '.$maxrand;
             break;
             case "complex":
-                $queryFileString = str_replace("|x|", randomizeDate($maxrand), returnQueryFile($dbSize, $complexity));
-                return $queryFileString;
+                return 'SELECT AVG(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS average,
+                SUM(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS sum_energy,
+                MAX(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS maximum,
+                MIN(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS minimum,
+                STD(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS std_dev,
+                VARIANCE(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS variance FROM jsontable_1 where jsonrow->>"$.tstamp" BETWEEN "1976-12-31%" AND '.'"'.randomizeDate($maxrand).'%"';
             break;
         }
     }

@@ -1,9 +1,8 @@
 <?php
 
 // PATH
-$dataFolder = "outputJSON_1";
-$prependFolder = "application/mysqlQueries/";
-$queryFolder = $dataFolder."_queries";
+$dataFolder = "outputJSON_5";
+$tableName = "jsontable_1";
 $folderPath = 'generate_datasets/'.$dataFolder;
 // Files in directory
 $files = scandir($folderPath);
@@ -14,7 +13,7 @@ $files = array_diff($files, array('.', '..', 'max'));
 $server = "localhost";
 $user = "admin";
 $password = "123";
-$database = "exjobb_1";
+$database = "exjobb_5";
 
 // Number separator for table names
 $tableCount = 0;
@@ -32,65 +31,16 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     echo "Connected!";
 
-    // Create subfolders
-    if(!file_exists($prependFolder)) {
-        mkdir($prependFolder);
-    }
-    if (!file_exists($prependFolder.$queryFolder)) {
-        mkdir($prependFolder.$queryFolder);
-    }
-    
-    // Create query files
-    $simpleQueryFile = fopen($prependFolder.$queryFolder."/simple.txt", "w+");
-    $complexQueryFile = fopen($prependFolder.$queryFolder."/complex.txt", "w+");
-   
-    // Write the initial SELECT statement
-    fwrite($simpleQueryFile, "SELECT * FROM (");
-    fwrite($complexQueryFile,
-    'SELECT AVG(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS average,
-    SUM(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS sum_energy,
-    MAX(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS maximum,
-    MIN(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS minimum,
-    STD(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS std_dev,
-    VARIANCE(CAST(jsonrow->>"$.tvalue" AS UNSIGNED)) AS variance FROM (');
+    $createDbSql = "CREATE TABLE {$tableName}(
+        id int AUTO_INCREMENT,
+        jsonrow JSON,
+        PRIMARY KEY(id)
+        ) ENGINE=InnoDB;
+    ";
+    $conn->exec($createDbSql);
 
-    // Keep track of iterations
-    $foreachCount = 0;
     // Iterate through all files in folder
     foreach($files as $f) {
-        $foreachCount++;
-
-        // Create a new table every 4 files inserted.
-        if($tableIterator % 40 == 0) {
-        // Create new table
-        $createDbSql = "CREATE TABLE jsontable_".(string)$tableCount."(
-            id int AUTO_INCREMENT,
-            jsonrow JSON,
-            PRIMARY KEY(id)
-            ) ENGINE=InnoDB;
-        ";
-        $conn->exec($createDbSql);
-        // Write simple query
-        $alias = "t".(string)$tableCount;
-        $query = "SELECT {$alias}.id, {$alias}.jsonrow from jsontable_".$tableCount." {$alias}";
-        if($tableIterator != count($files) && $tableIterator + 40 <= count($files)) {
-            $query.= " UNION ALL ";
-        }
-        // Write to queries
-        fwrite($simpleQueryFile, $query);
-        fwrite($complexQueryFile, $query);
-
-        // Increment
-        $tableInsert++;
-        $tableCount++;
-        }
-        // Finish query files
-        if($foreachCount == count($files)) {
-            fwrite($simpleQueryFile, ') tAlias where jsonrow->>"$.tkeycode" = |x|');
-            fwrite($complexQueryFile, ') tAlias where jsonrow->>"$.tstamp" BETWEEN "1976-12-31%" AND "|x|%"');
-        }
-
-        ///*
         $qmarks = "";
         $valArr = array();
         $js = file_get_contents($folderPath."/".$f);
@@ -122,14 +72,10 @@ try {
             }
             $insert = "";
         }
-        $sql = "INSERT INTO jsontable_".$tableInsert." (jsonrow) VALUES {$qmarks}";
+        $sql = "INSERT INTO {$tableName} (jsonrow) VALUES {$qmarks}";
         $stmt = $conn->prepare($sql);
         $stmt->execute($valArr);
-        //*/
-        // Increase table counter
-        $tableIterator++;
     }
-    echo "Foreach: ".$foreachCount;
 }
 catch(PDOException $e)
     {

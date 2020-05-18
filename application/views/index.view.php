@@ -23,10 +23,10 @@ function buildFront() {
     <label>Data size:</label><br>
     <input type="radio" id="one" name="dataSize" value="one">
     <label for="one">1 GB</label><br>
+    <input type="radio" id="five" name="dataSize" value="five">
+    <label for="ten">5 GB</label><br>
     <input type="radio" id="thirteen" name="dataSize" value="thirteen">
-    <label for="ten">13 GB</label><br>
-    <input type="radio" id="forty" name="dataSize" value="forty">
-    <label for="fifty">40 GB</label><br>
+    <label for="fifty">13 GB</label><br>
     <input id="submit" type="submit">
     </form>
 ';
