@@ -15,11 +15,6 @@ $user = "admin";
 $password = "123";
 $database = "exjobb_5";
 
-// Number separator for table names
-$tableCount = 0;
-$tableInsert = -1;
-$tableIterator = 0;
-
 $timeNOW;
 $dateNOW;
 
